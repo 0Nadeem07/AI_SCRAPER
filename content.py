@@ -25,7 +25,7 @@ def url_content(url):
 
     # print(response.status_code)
     if response.status_code == 200:
-        soup =BeautifulSoup(response,'html.parser')
+        soup =BeautifulSoup(response.text,'html.parser')
         body = soup.body
         if body:
             return str(body)
