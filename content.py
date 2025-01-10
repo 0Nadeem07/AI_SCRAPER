@@ -1,19 +1,21 @@
-import requests
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 def url_content(url):
 
-    chrome_driver_path = "chromedriver.exe"
-    service = Service(chrome_driver_path)
-
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-
+    options.add_argument("--headless")  # Run in headless mode
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    
+    # Use webdriver-manager to download the appropriate ChromeDriver
+    service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 
     driver.get(url)
