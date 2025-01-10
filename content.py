@@ -12,7 +12,7 @@ def url_content(url):
     service = Service(chrome_driver_path)
 
     options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
 
     driver = webdriver.Chrome(service=service, options=options)
 
