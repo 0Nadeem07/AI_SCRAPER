@@ -1,30 +1,30 @@
 
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
+# from selenium import webdriver
+# from selenium.webdriver.chrome.service import Service
+# from selenium.webdriver.common.by import By
 import time
-from webdriver_manager.chrome import ChromeDriverManager
-
+# from webdriver_manager.chrome import ChromeDriverManager
+import requests
 
 def url_content(url):
 
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")  # Run in headless mode
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
+    # options = webdriver.ChromeOptions()
+    # options.add_argument("--headless")  # Run in headless mode
+    # options.add_argument("--no-sandbox")
+    # options.add_argument("--disable-dev-shm-usage")
     
-    # Use webdriver-manager to download the appropriate ChromeDriver
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=options)
+    # # Use webdriver-manager to download the appropriate ChromeDriver
+    # service = Service(ChromeDriverManager().install())
+    # driver = webdriver.Chrome(service=service, options=options)
+    response = requests.get(url)
+    # driver.get(url)
+    # time.sleep(2)
 
-    driver.get(url)
-    time.sleep(2)
-
-    response  =  driver.page_source
+    # response  =  driver.page_source
 
     # print(response.status_code)
-    if response:
+    if response.status_code == 200:
         soup =BeautifulSoup(response,'html.parser')
         body = soup.body
         if body:
@@ -32,7 +32,7 @@ def url_content(url):
         else:
             return ""
         
-    driver.quit()
+    # driver.quit()
 
 def clean_content(body):
     if body:
