@@ -33,8 +33,8 @@ Python, Streamlit, Ollama, LangChain, BeautifulSoup, Requests
 1. **Clone the repository:**
 
 ```bash
-git clone https://github.com/yourusername/ai-web-scraper.git
-cd ai-web-scraper
+git clone https://github.com/0Nadeem07/AI_SCRAPER.git
+cd AI_SCRAPER
 ```
 
 2. **(Optional) Create a virtual environment:**
