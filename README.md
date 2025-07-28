@@ -83,7 +83,7 @@ See extraction and status updates in real-time.
 
 ## 📸 Example Screenshot
 
-![App Screenshot](./AISCRAPER.png)
+![App Screenshot](./AI_SCRAPER.png)
 
 ## 📄 License
 
