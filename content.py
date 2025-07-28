@@ -6,31 +6,93 @@ from bs4 import BeautifulSoup
 import time
 # from webdriver_manager.chrome import ChromeDriverManager
 import requests
+import logging
+import pandas as pd
+from bs4 import BeautifulSoup
+import os
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+def start_scraping(url):
+    endpoint = "https://onionfleet.willreo.com/api/fetch/"
+    # endpoint="http://127.0.0.1:8000/api/fetch/"
+    payload = {"url": url, "is_html": False}
+    try:
+        response = requests.post(endpoint, json=payload, timeout=10)
+        data = response.json()
+        return data.get("token")
+    except Exception as e:
+        logger.error(f"Error starting scrape for {url}: {e}")
+        return None
+
+def get_scraped_html(token, max_retries=10, delay=8):
+    result_endpoint = f"https://onionfleet.willreo.com/api/result/{token}"
+    for _ in range(max_retries):
+        try:
+            response = requests.get(result_endpoint, timeout=10)
+            content_type = response.headers.get("Content-Type", "")
+
+            if "application/json" in content_type:
+                data = response.json()
+                status = data.get("status")
+                if status == "SUCCESS":
+                    return response.text
+                elif status == "FAILED":
+                    logger.warning(f"Scrape failed for token: {token}")
+                    return None
+                else:
+                    logger.info(f"Status: {status}. Retrying...")
+                    time.sleep(delay)
+            else:
+                return response.text
+        except Exception as e:
+            logger.warning(f"Error fetching result for token {token}: {e}")
+            time.sleep(delay)
+    return None
+
 
 def url_content(url):
 
-    # options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")  # Run in headless mode
-    # options.add_argument("--no-sandbox")
-    # options.add_argument("--disable-dev-shm-usage")
+#     options = webdriver.ChromeOptions()
+#     # options.add_argument("--headless")  # Run in headless mode
+#     options.add_argument("--no-sandbox")
+#     options.add_argument("--disable-dev-shm-usage")
     
-    # # Use webdriver-manager to download the appropriate ChromeDriver
-    # service = Service(ChromeDriverManager().install())
-    # driver = webdriver.Chrome(service=service, options=options)
-    response = requests.get(url)
-    # driver.get(url)
-    # time.sleep(2)
+#     # Use webdriver-manager to download the appropriate ChromeDriver
+#     service = Service(ChromeDriverManager().install())
+#     driver = webdriver.Chrome(service=service, options=options)
 
-    # response  =  driver.page_source
+#     # proxy = {
+#     #     'https://':"3.99.167.1:3128",
+#     # }
 
-    # print(response.status_code)
-    if response.status_code == 200:
-        soup =BeautifulSoup(response.text,'html.parser')
-        body = soup.body
-        if body:
-            return str(body)
-        else:
-            return ""
+#     # headers = {
+#     #     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+#     # }
+#     # response = requests.get(url ,headers=headers)
+#     # print(response.status_code)
+#     driver.get(url)
+#     time.sleep(2)
+
+#     response  =  driver.page_source
+    token = start_scraping(url)
+    logger.info(f"Your token , {token}")
+
+    if not token:
+        logger.error(f"Failed to start scrape for {url}")
+
+    html = get_scraped_html(token)
+    if not html:
+        logger.error(f"Failed to get HTML for {url}")
+    soup =BeautifulSoup(html,'html.parser')
+    body = soup.body
+    if body:
+        return str(body)
+    else:
+        return ""
+        
         
     # driver.quit()
 
