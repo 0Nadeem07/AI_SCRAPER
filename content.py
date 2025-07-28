@@ -9,15 +9,18 @@ import requests
 import logging
 import pandas as pd
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 import os
+
+load_dotenv()  # loads variables from .env into environment
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
+endpoint = os.getenv("ONIONFLEET_API_ENDPOINT")
+result_endpoint_base = os.getenv("ONIONFLEET_RESULT_ENDPOINT")
 def start_scraping(url):
-    endpoint = "https://onionfleet.willreo.com/api/fetch/"
-    # endpoint="http://127.0.0.1:8000/api/fetch/"
     payload = {"url": url, "is_html": False}
     try:
         response = requests.post(endpoint, json=payload, timeout=10)
@@ -28,7 +31,8 @@ def start_scraping(url):
         return None
 
 def get_scraped_html(token, max_retries=10, delay=8):
-    result_endpoint = f"https://onionfleet.willreo.com/api/result/{token}"
+
+    result_endpoint = f"{result_endpoint_base}{token}"
     for _ in range(max_retries):
         try:
             response = requests.get(result_endpoint, timeout=10)
