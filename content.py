@@ -18,8 +18,8 @@ load_dotenv()  # loads variables from .env into environment
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-endpoint = os.getenv("ONIONFLEET_API_ENDPOINT")
-result_endpoint_base = os.getenv("ONIONFLEET_RESULT_ENDPOINT")
+endpoint = os.getenv("API_ENDPOINT")
+result_endpoint_base = os.getenv("RESULT_ENDPOINT")
 def start_scraping(url):
     payload = {"url": url, "is_html": False}
     try:
